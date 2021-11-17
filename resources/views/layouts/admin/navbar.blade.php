@@ -3,12 +3,22 @@
         <a id="nav-toggle" href="#"><i data-feather="menu" class="nav-icon me-2 icon-xs"></i></a>
         <div class="ms-lg-3 d-none d-md-none d-lg-block">
             <!-- Form -->
-            <form class="d-flex align-items-center">
-                <input type="search" class="form-control w-100" placeholder="Rechercher une formation..." />
-            </form>
-        </div>
-        <!--Navbar nav -->
-        @auth
+            <form class="d-flex align-items-center" method="POST" @auth @if (!auth()->user()->isAdmin())
+                action="{{ route('user.formations.search') }}"
+            @else
+                action="{{ route('formations.search') }}"
+                @endif
+            @endauth
+            @guest
+                action="{{ route('formations.search') }}"
+            @endguest
+            >
+            @csrf
+            <input name="search" type="text" class="form-control w-100" placeholder="Rechercher une formation..." />
+        </form>
+    </div>
+    <!--Navbar nav -->
+    @auth
         <ul class="navbar-nav navbar-right-wrap ms-auto d-flex nav-top-wrap">
             {{-- <li class="dropdown stopevent">
                 <a class="btn btn-light btn-icon rounded-circle indicator indicator-primary text-muted" href="#"
@@ -145,6 +155,6 @@
                 </div>
             </li>
         </ul>
-        @endauth
-    </nav>
+    @endauth
+</nav>
 </div>

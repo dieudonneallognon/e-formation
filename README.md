@@ -38,3 +38,7 @@ php artisan migrate:fresh --seed
 
 email: admin@admin.com
 mot de passe: admin
+
+## MCD
+
+Voir le fichier MCD.png

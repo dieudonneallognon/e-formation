@@ -60,7 +60,7 @@ class Formation extends Model
     protected $fillable = [
         'designation',
         'description',
-        'type',
+        // 'type',
         'image',
         'price',
     ];

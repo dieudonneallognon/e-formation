@@ -131,4 +131,18 @@ class UserFormationController extends Controller
 
         return redirect()->route('user.formations.index');
     }
+
+    public function search(SearchFormationRequest $request)
+    {
+        $data = $request->validated();
+
+        $formations = Formation::where('designation', 'like', '%' . $data['search'] . '%')
+        ->where('user_id', auth()->user()->id)->get();
+
+        $categories = Category::all();
+        $categoriesSearch = Category::where('name', 'like', '%' . $data['search'] . '%')->get();
+        $formationIds = $formations->pluck(['id'])->toArray();
+
+        return view('formations.index', compact(['formations', 'categories', 'categoriesSearch', 'formationIds']));
+    }
 }
