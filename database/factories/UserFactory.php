@@ -27,6 +27,7 @@ class UserFactory extends Factory
             'lastName' => $this->faker->lastName,
             'email' => $this->faker->unique()->safeEmail(),
             'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password
+            'avatar' => "https://api.multiavatar.com/".$this->faker->word.".png",
             'role_id' => $this->faker->randomElement(UserRole::all('id')),
         ];
     }

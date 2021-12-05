@@ -50,6 +50,7 @@ class DatabaseSeeder extends Seeder
             'email'=> 'admin@admin.com',
             'password'=> Hash::make('admin'),
             'role_id' => UserRole::where('name', UserRole::ADMIN_ROLE)->first()->id,
+            'avatar' => 'https://api.multiavatar.com/admin.png'
         ]);
     }
 }

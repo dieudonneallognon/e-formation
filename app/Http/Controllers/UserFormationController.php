@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\SearchFormationRequest;
 use App\Http\Requests\StoreFormationRequest;
 use App\Http\Requests\UpdateFormationRequest;
 use App\Models\Category;
@@ -34,91 +35,82 @@ class UserFormationController extends Controller
         $data = $request->validated();
         $image = $request->file('image');
 
-        $formation = new Formation();
-        $formation->designation = $data['designation'];
-        $formation->description = $data['description'];
-        $formation->price = $data['price'];
-        $formation->image = Str::replaceArray('?', [strtotime('now'), $image->extension()], Formation::IMAGE_PATTERN);
-        $formation->type = 'test';
-        $formation->user_id = auth()->user()->id;
-        $formation->save();
+        $formation = Formation::create([
+            'designation' => $data['designation'],
+            'description' => $data['description'],
+            'price' => $data['price'],
+            'image' => Str::replaceArray(
+                '?', [strtotime('now'), $image->extension()],
+                Formation::IMAGE_PATTERN
+            ),
+            'type' => 'test',
+            'user_id' => auth()->user()->id
+        ]);
 
-        $image->storeAs(
-            'public',
-            Str::replaceArray('?', [strtotime('now'), $image->extension()], Formation::IMAGE_PATTERN)
-        );
+        $formation->categories()->sync($data['categories']);
 
-        collect($data['chapters'])->each(function ($chapter, $pos) use ($formation) {
-            Chapter::create([
+        $image->storeAs('public', $formation->image);
+
+        $chapters = [];
+        foreach ($data['chapters'] as $index => $chapter) {
+            $chapters[] =  [
                 'title' => $chapter,
-                'number' => $pos + 1,
+                'number' => $index + 1,
                 'formation_id' => $formation->id,
-            ]);
-        });
+            ];
+        }
 
-        collect($data['categories'])->each(function ($category, $pos) use ($formation) {
-            FormationCategoryLink::create([
-                'category_id' => $category,
-                'formation_id' => $formation->id,
-            ]);
-        });
-
+        Chapter::insert($chapters);
         return redirect()->route('user.formations.index')->with(['success' => true]);
     }
 
-    public function edit($formation)
+    public function edit(int $formation)
     {
         $formation = Formation::find($formation);
         $categories = Category::all();
 
-        $formationCategory = FormationCategoryLink::where(['formation_id', $formation]);
-
-        return view('formations.edit', compact(['formation', 'categories', 'formationCategory']));
+        return view('formations.edit', compact(['formation', 'categories']));
     }
 
-    public function update(UpdateFormationRequest $request, $formation)
+    public function update(UpdateFormationRequest $request, int $formationId)
     {
         $data = $request->validated();
         $image = $request->file('image');
 
-        $formationUpdate = Formation::find($formation);
-        $formationUpdate->designation = $data['designation'];
-        $formationUpdate->description = $data['description'];
-        $formationUpdate->price = $data['price'];
-        $formationUpdate->type = 'test';
-        $formationUpdate->save();
+        $formation = Formation::find($formationId);
+        $formation->designation = $data['designation'];
+        $formation->description = $data['description'];
+        $formation->price = $data['price'];
+        $formation->type = 'test';
+        $formation->save();
 
         if ($image) {
-            $formationUpdate->image = Str::replaceArray('?', [strtotime('now'), $image->extension()], Formation::IMAGE_PATTERN);
-        }
+            $formation->image = Str::replaceArray(
+                '?', [strtotime('now'), $image->extension()],
+                Formation::IMAGE_PATTERN
+            );
 
-        if ($image) {
-            if (Storage::exists($formationUpdate->image)) {
-                Storage::delete([$formationUpdate->image]);
+            if (Storage::exists($formation->image)) {
+                Storage::delete([$formation->image]);
             }
 
             $image->storeAs(
                 'public',
-                Str::replaceArray('?', [strtotime('now'), $image->extension()], Formation::IMAGE_PATTERN)
+                $formation->image
             );
         }
 
-        collect($data['chapters'])->each(function ($chapter, $pos) use ($formationUpdate) {
-            Chapter::create([
-                'title' => $chapter,
-                'number' => $pos + 1,
-                'formation_id' => $formationUpdate->id,
+        $formation->categories()->sync($data['categories']);
+        $formation->chapters()->delete();
+
+        $chapters = collect($data['chapters'])->map(function ($chapter, $index) {
+            return new Chapter([
+                'number' => ($index +1),
+                'title' => $chapter
             ]);
         });
 
-        FormationCategoryLink::where('formation_id', $formationUpdate->id)->delete();
-
-        collect($data['categories'])->each(function ($category, $pos) use ($formationUpdate) {
-            FormationCategoryLink::create([
-                'category_id' => $category,
-                'formation_id' => $formationUpdate->id,
-            ]);
-        });
+        $formation->chapters()->saveMany($chapters);
 
         return redirect()->route('user.formations.index')->with(['success' => true]);
     }
@@ -136,13 +128,14 @@ class UserFormationController extends Controller
     {
         $data = $request->validated();
 
-        $formations = Formation::where('designation', 'like', '%' . $data['search'] . '%')
-        ->where('user_id', auth()->user()->id)->get();
+        $formations = Formation::whereBelongsTo(auth()->user())
+            ->where(function($query) use($data) {
+                return $query->whereRelation('categories', 'name', 'like', "%{$data['search']}%")
+                    ->orWhere('designation', 'like', "%{$data['search']}%");
+            })->get();
 
         $categories = Category::all();
-        $categoriesSearch = Category::where('name', 'like', '%' . $data['search'] . '%')->get();
-        $formationIds = $formations->pluck(['id'])->toArray();
 
-        return view('formations.index', compact(['formations', 'categories', 'categoriesSearch', 'formationIds']));
+        return view('formations.index', compact(['formations', 'categories']));
     }
 }

@@ -17,10 +17,9 @@ class CreateFormationsTable extends Migration
             $table->id();
             $table->string('designation')->unique();
             $table->text('description');
-            // $table->string('type');
             $table->string('image');
             $table->unsignedDecimal('price', 6, 2);
-            $table->foreignId('user_id')->constrained('users');
+            $table->foreignId('user_id')->constrained('users')->onDelete('CASCADE');
             $table->timestamps();
         });
     }

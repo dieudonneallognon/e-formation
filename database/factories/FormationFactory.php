@@ -25,7 +25,6 @@ class FormationFactory extends Factory
         return [
             'designation' => $this->faker->catchPhrase,
             'description' => $this->faker->paragraphs(random_int(2, 5), true),
-            'type' => $this->faker->word,
             'price'=> $this->faker->randomFloat(2, 0, 1000),
             'image'=> $this->faker->imageUrl(400, 600),
             'user_id' => User::factory(),

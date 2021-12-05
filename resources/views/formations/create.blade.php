@@ -105,8 +105,12 @@
 
 
 @section('scripts')
+    @parent
+
     <script src="https://cdn.tiny.cloud/1/4741oc33ybtlzv6rsed459tfil3q25ivwfmvcieq3g5wocus/tinymce/5/tinymce.min.js"
-        referrerpolicy="origin"></script>
+            referrerpolicy="origin">
+    </script>
+
     <script>
         window.addEventListener('load', (event) => {
             tinymce.init({
@@ -123,11 +127,32 @@
             chapterZone.innerHTML = '';
 
             for (let i = 1; i <= chapterNb; i++) {
-                chapterZone.innerHTML += `<div class="mb-3">
-                                                <label class="form-label" for="textInput">Chapitre ${i}</label>
-                                                <input type="text" id="textInput" class="form-control" name="chapters[]"
-                                                    placeholder="Titre du chapitre...">
-                                            </div>`;
+                chapterZone.innerHTML += `
+                    <div class="mb-3">
+                        <label class="form-label" for="textInput">Chapitre ${i}</label>
+                        <input type="text" id="textInput" class="form-control" name="chapters[]"
+                            placeholder="Titre du chapitre...">
+                    </div>
+                `;
+            }
+        });
+    </script>
+    <script>
+        document.querySelector('input[name="image"]').addEventListener('change', (event) => {
+            console.log(event.currentTarget.value);
+
+            const ext = event.currentTarget.value.match(/\..*/).pop();
+
+            if (event.currentTarget.files[0] && (ext === ".png" || ext === ".jpeg" || ext === ".jpg")) {
+                let reader = new FileReader();
+
+                reader.onload = function(e) {
+                    document.querySelector('img.card-img-bottom').setAttribute('src', e.target.result);
+                }
+                reader.readAsDataURL(event.currentTarget.files[0]);
+            } else {
+                document.querySelector('img.card-img-bottom').setAttribute('src',
+                    "{{ asset('assets/images/placeholder/placeholder-4by3.svg') }}");
             }
         });
     </script>

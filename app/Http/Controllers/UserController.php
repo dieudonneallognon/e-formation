@@ -2,41 +2,53 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\UpdatePasswordRequest;
-use App\Http\Requests\UpdateProfileRequest;
+use App\Models\Category;
 use App\Models\User;
+use App\Models\UserRole;
+use App\Notifications\RegistrationApproval;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 
 class UserController extends Controller
 {
-    public function showProfil()
+
+    public function index()
     {
-        return view('users.profile');
+        $users = User::with(['role'])->where('id', '!=', auth()->id())->get();
+        $categories = Category::all();
+
+        return view('users.index', compact(['users', 'categories']));
     }
 
-    public function updateProfile(UpdateProfileRequest $request)
+
+    public function create()
     {
-        $params = $request->validated();
-
-        if ($email = $params['email']) {
-            $user = User::find(auth()->user()->id);
-            $user->email = $email;
-            $user->save();
-        }
-
-        return redirect()->route('user.profile.show')->with(['success' => $email]);
+        return view('auth.register');
     }
 
-    public function updatePassword(UpdatePasswordRequest $request)
+
+    public function store(Request $request)
     {
-        $params = $request->validated();
+        $userData = collect([
+            'email', 'firstName', 'lastName',
+        ])->combine(Str::of(Crypt::decrypt($request->get('token')))->explode(':'))->toArray();
 
-        $user = User::find(auth()->user()->id);
+        $userData['password'] = Hash::make(User::DEFAULT_PASSWORD);
+        $userData['role_id'] = UserRole::where('name', UserRole::FORMATOR_ROLE)->first()->id;
 
-        $user->password = Hash::make($params['new_password']);
+        $user = User::create($userData);
 
-        $user->save();
+        $user->notify(new RegistrationApproval());
 
-        return redirect()->route('user.profile.show')->with(['success' => true]);
+        return view('users.subscription-success');
+    }
+
+    public function destroy($email)
+    {
+        User::where('email', $email)->delete();
+
+        return redirect()->route('admin.users.index')->with(['success' => true]);
     }
 }

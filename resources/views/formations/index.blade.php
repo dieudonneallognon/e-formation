@@ -9,7 +9,17 @@
                 <div>
                     <div class="d-flex justify-content-between align-items-center">
                         <div class="mb-2 mb-lg-0">
-                            <h3 class="mb-0 fw-bold text-white">Formations</h3>
+                            @auth
+                                @if (auth()->user()->isAdmin())
+                                    <h3 class="mb-0 fw-bold text-white">Formations</h3>
+                                @else
+                                    <h3 class="mb-0 fw-bold text-white">Mes Formations</h3>
+                                @endif
+                            @endauth
+
+                            @guest
+                                    <h3 class="mb-0 fw-bold text-white">Formations</h3>
+                            @endguest
                         </div>
                         @auth
                             <div>
@@ -121,7 +131,7 @@
             <div class="card-body">
                 <div class="row">
                     @isset($formations)
-                        @foreach ($formations as $formation)
+                        @forelse ($formations as $formation)
                             <div class="col-4 my-5">
                                 <div class="card position-relative">
                                     <img src="@if (Str::contains($formation->image, 'http')){{ asset("$formation->image") }}@else{{ asset("storage/$formation->image") }}@endif" height="400px" class="card-img-top"
@@ -131,8 +141,7 @@
                                         style="top: 5px; right: 5px;">{{ $formation->price }} €</span>
                                     <div class="card-body text-center">
                                         <h5 class="card-title fw-bolder fs-4 my-2">{{ $formation->designation }}</h5>
-                                        <a href="{{ route('formations.show', ['formation' => $formation->id]) }}"
-                                            class="btn btn-primary">
+                                        <a href="{{ route('formations.show', ['formation' => $formation->id]) }}" class="btn btn-primary">
                                             <i class="bi bi-eye-fill"></i>&nbsp;Suivre
                                         </a>
                                         @auth
@@ -149,75 +158,11 @@
                                     </div>
                                 </div>
                             </div>
-                        @endforeach
+                        @empty
+                                <h1 class="text-muted my-4 text-center">Aucune formation n'est disponible ou ne correspond à votre recherche !</h1>
+                        @endforelse
                     @endisset
 
-                    @isset($categoriesSearch)
-                        @foreach ($categoriesSearch as $category)
-                            @foreach ($category->formations as $categoryFormation)
-                                @if (!in_array($categoryFormation->id, $formationIds))
-                                    <div class="col-4 my-5">
-                                        <div class="card position-relative">
-                                            <img src="@if (Str::contains($categoryFormation->image, 'http')){{ asset("$categoryFormation->image") }}@else{{ asset("storage/$categoryFormation->image") }}@endif" height="400px" class="card-img-top"
-                                                alt="{{ $categoryFormation->designation }}">
-
-                                            <span class="badge rounded-pill bg-primary position-absolute fs-5 shadow"
-                                                style="top: 5px; right: 5px;">{{ $categoryFormation->price }} €</span>
-                                            <div class="card-body text-center">
-                                                <h5 class="card-title fw-bolder fs-4 my-2">
-                                                    {{ $categoryFormation->designation }}</h5>
-                                                <a href="{{ route('formations.show', ['formation' => $categoryFormation->id]) }}"
-                                                    class="btn btn-primary">
-                                                    <i class="bi bi-eye-fill"></i>&nbsp;Suivre
-                                                </a>
-                                                @auth
-                                                    @if ($categoryFormation->user()->is(auth()->user()))
-                                                        <a href="{{ route('user.formations.edit', ['formation' => $categoryFormation->id]) }}"
-                                                            class="btn btn-primary">
-                                                            <span class="bi bi-pen-fill"></span> Editer</a>
-                                                        <a id="formation-delete"
-                                                            href="{{ route('user.formations.destroy', ['formation' => $categoryFormation->id]) }}"
-                                                            class="btn btn-primary">
-                                                            <span class="bi bi-trash-fill"></span> Retirer</a>
-                                                    @endif
-                                                @endauth
-                                            </div>
-                                        </div>
-                                    </div>
-                                @endif
-                            @endforeach
-                        @endforeach
-                    @endisset
-
-                    {{-- @foreach ($category->formations as $formation)
-                        <div class="col-4 my-5">
-                            <div class="card position-relative">
-                                <img src="@if (Str::contains($formation->image, 'http')){{ asset("$formation->image") }}@else{{ asset("storage/$formation->image") }}@endif" height="400px" class="card-img-top"
-                                    alt="{{ $formation->designation }}">
-
-                                <span class="badge rounded-pill bg-primary position-absolute fs-5 shadow"
-                                    style="top: 5px; right: 5px;">{{ $formation->price }} €</span>
-                                <div class="card-body text-center">
-                                    <h5 class="card-title fw-bolder fs-4 my-2">{{ $formation->designation }}</h5>
-                                    <a href="{{ route('formations.show', ['formation' => $formation->id]) }}"
-                                        class="btn btn-primary">
-                                        <i class="bi bi-eye-fill"></i>&nbsp;Suivre
-                                    </a>
-                                    @auth
-                                        @if ($formation->user()->is(auth()->user()))
-                                            <a href="{{ route('user.formations.edit', ['formation' => $formation->id]) }}"
-                                                class="btn btn-primary">
-                                                <span class="bi bi-pen-fill"></span> Editer</a>
-                                            <a id="formation-delete"
-                                                href="{{ route('user.formations.destroy', ['formation' => $formation->id]) }}"
-                                                class="btn btn-primary">
-                                                <span class="bi bi-trash-fill"></span> Retirer</a>
-                                        @endif
-                                    @endauth
-                                </div>
-                            </div>
-                        </div>
-                    @endforeach --}}
                 </div>
 
                 {{-- <p href="#">{{ $formations->links() }}</p> --}}

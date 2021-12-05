@@ -18,13 +18,6 @@ class UpdatePasswordRequest extends FormRequest
         return Auth::check();
     }
 
-    public function prepareForValidation()
-    {
-        if (Hash::check($this->get('password'), auth()->user()->password)) {
-            $this->merge(['password' => auth()->user()->password]);
-        }
-    }
-
     /**
      * Get the validation rules that apply to the request.
      *
@@ -33,8 +26,8 @@ class UpdatePasswordRequest extends FormRequest
     public function rules()
     {
         return [
-            'password' => 'required|in:' . auth()->user()->password,
-            'new_password' => 'required|between:8,255|confirmed',
+            'password' => 'required|current_password:auth|bail',
+            'new_password' => 'required|between:8,255|confirmed|bail',
         ];
     }
 }

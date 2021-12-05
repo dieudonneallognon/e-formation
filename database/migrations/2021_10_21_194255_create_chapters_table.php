@@ -17,7 +17,7 @@ class CreateChaptersTable extends Migration
             $table->id();
             $table->string('number');
             $table->string('title');
-            $table->foreignId('formation_id')->constrained('formations');
+            $table->foreignId('formation_id')->constrained('formations')->onDelete('CASCADE');
             $table->timestamps();
         });
     }

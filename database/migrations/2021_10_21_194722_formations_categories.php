@@ -15,8 +15,8 @@ class FormationsCategories extends Migration
     {
         Schema::create('formations_categories', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('formation_id')->constrained('formations');
-            $table->foreignId('category_id')->constrained('categories');
+            $table->foreignId('formation_id')->constrained('formations')->onDelete('CASCADE');
+            $table->foreignId('category_id')->constrained('categories')->onDelete('CASCADE');
         });
     }
 

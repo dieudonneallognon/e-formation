@@ -28,11 +28,12 @@ class FormationController extends Controller
     {
         $data = $request->validated();
 
-        $formations = Formation::where('designation', 'like', '%' . $data['search'] . '%')->get();
-        $categories = Category::all();
-        $categoriesSearch = Category::where('name', 'like', '%' . $data['search'] . '%')->get();
-        $formationIds = $formations->pluck(['id'])->toArray();
+        $formations = Formation::whereRelation('categories', 'name', 'like', "%{$data['search']}%")
+            ->orWhere('designation', 'like', '%' . $data['search'] . '%')
+            ->get();
 
-        return view('formations.index', compact(['formations', 'categories', 'categoriesSearch', 'formationIds']));
+        $categories = Category::all();
+
+        return view('formations.index', compact(['formations', 'categories']));
     }
 }

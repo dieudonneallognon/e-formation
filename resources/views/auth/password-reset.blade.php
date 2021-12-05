@@ -3,6 +3,9 @@
 @section('form')
     @if ($errors->any())
         <x-alert type="danger" message="Veillez à bien remplir le formulaire" />
+        @foreach($errors as $error)
+            <x-alert type="danger" message:="Veillez à bien remplir le formulaire" />
+        @endforeach
     @endif
     <!-- Card -->
     <div class="card smooth-shadow-md">

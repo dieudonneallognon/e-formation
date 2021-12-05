@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany as HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Str;
 use Laravel\Sanctum\HasApiTokens;
 
 /**
@@ -74,6 +75,7 @@ class User extends Authenticatable
         'email',
         'password',
         'role_id',
+        'avatar'
     ];
 
     /**
@@ -89,6 +91,17 @@ class User extends Authenticatable
     public function isAdmin()
     {
         return $this->role->name == UserRole::ADMIN_ROLE;
+    }
+
+    public function isFormator()
+    {
+        return $this->role->name == UserRole::FORMATOR_ROLE;
+    }
+
+    public function getAvatar() {
+        return (Str::of($this->avatar)->contains('http'))
+            ? $this->avatar
+            : "storage/".$this->avatar;
     }
 
     /**

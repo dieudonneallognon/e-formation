@@ -12,14 +12,13 @@
         <div class="card">
             <div class="card-body">
                 <div class="card mb-3">
-                    <img src="@if (Str::contains($formation->image, 'https')){{ asset($formation->image) }}@else{{ asset('storage/' . $formation->image) }}@endif"
+                    <img src="{{ $formation->image }}" data-old="{{ $formation->image }}"
                         height="800px" class="card-img-bottom" alt="...">
                     <div class="card-body">
                         <div class="row">
                             <div class="col-12">
-                                <form id="edit-formation" method="POST" action="{{ route('user.formations.update',
-                                    ['formation' => $formation->id, 'id' => $formation->id]) }}"
-                                    enctype="multipart/form-data">
+                                <form id="edit-formation" method="POST" enctype="multipart/form-data"
+                                      action="{{ route('user.formations.update', ['formation' => $formation->id, 'id' => $formation->id]) }}">
                                     @csrf
                                     @method('PUT')
                                     <!-- Input -->
@@ -115,30 +114,57 @@
 
 
 @section('scripts')
-<script src="https://cdn.tiny.cloud/1/4741oc33ybtlzv6rsed459tfil3q25ivwfmvcieq3g5wocus/tinymce/5/tinymce.min.js"
-    referrerpolicy="origin"></script>
-<script>
-    window.addEventListener('load', (event) => {
-        tinymce.init({
-            selector: '#description'
+    @parent
+
+    <script src="https://cdn.tiny.cloud/1/4741oc33ybtlzv6rsed459tfil3q25ivwfmvcieq3g5wocus/tinymce/5/tinymce.min.js"
+        referrerpolicy="origin">
+    </script>
+
+    <script>
+        window.addEventListener('load', (event) => {
+            tinymce.init({
+                selector: '#description'
+            });
         });
-    });
-</script>
+    </script>
 
-<script>
-    document.getElementById('chapter-nb').addEventListener('change', (event) => {
-        const chapterNb = event.currentTarget.value;
-        const chapterZone = document.getElementById('chapter-zone');
+    <script>
+        document.getElementById('chapter-nb').addEventListener('change', (event) => {
+            const chapterNb = event.currentTarget.value;
+            const chapterZone = document.getElementById('chapter-zone');
 
-        chapterZone.innerHTML = '';
+            chapterZone.innerHTML = '';
 
-        for (let i = 1; i <= chapterNb; i++) {
-            chapterZone.innerHTML += `<div class="mb-3">
-                                                <label class="form-label" for="textInput">Chapitre ${i}</label>
-                                                <input type="text" id="textInput" class="form-control" name="chapters[]"
-                                                    placeholder="Titre du chapitre...">
-                                            </div>`;
-        }
-    });
-</script>
+            for (let i = 1; i <= chapterNb; i++) {
+                chapterZone.innerHTML += `
+                    <div class="mb-3">
+                        <label class="form-label" for="textInput">Chapitre ${i}</label>
+                        <input type="text" id="textInput" class="form-control" name="chapters[]"
+                            placeholder="Titre du chapitre...">
+                    </div>
+                `;
+            }
+        });
+    </script>
+    <script>
+        document.querySelector('input[name="image"]').addEventListener('change', (ev) => {
+
+            const ext = ev.currentTarget.value.match(/\..*/).pop();
+
+            if (ev.currentTarget.files[0] && (ext === ".png" || ext === ".jpeg" || ext === ".jpg")) {
+                let reader = new FileReader();
+
+                reader.onload = function(e) {
+                    document.querySelector('img.card-img-bottom').setAttribute('src', e.target.result);
+                }
+                reader.readAsDataURL(ev.currentTarget.files[0]);
+            } else {
+                document.querySelector('img.card-img-bottom').setAttribute('src',
+                    document.querySelector('img.card-img-bottom').getAttribute('data-old'));
+                alert('Vous devez choisir une image !');
+
+                ev.currentTarget.value = null;
+            }
+        });
+    </script>
 @endsection

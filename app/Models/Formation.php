@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo as BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany as BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany as HasMany;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Str;
 
 /**
  * App\Models\Formation.
@@ -60,9 +61,10 @@ class Formation extends Model
     protected $fillable = [
         'designation',
         'description',
-        // 'type',
+        'type',
         'image',
         'price',
+        'user_id'
     ];
 
     public static function boot()
@@ -78,6 +80,12 @@ class Formation extends Model
             });
             // do the rest of the cleanup...
         });
+    }
+
+    public function getImage() {
+        return (Str::contains($this->image, 'https'))
+            ? $this->image
+            : asset("storage/$this->image");
     }
 
     /**
@@ -117,6 +125,6 @@ class Formation extends Model
      */
     public function categories(): BelongsToMany
     {
-        return $this->belongsToMany(Cache::class, 'formations_categories', 'formation_id', 'category_id');
+        return $this->belongsToMany(Category::class, 'formations_categories', 'formation_id', 'category_id');
     }
 }

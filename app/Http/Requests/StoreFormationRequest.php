@@ -29,8 +29,8 @@ class StoreFormationRequest extends FormRequest
             'description' => 'required|string',
             'image' => 'required|image',
             'price' => 'required|numeric',
-            'chapters' => 'required|array|',
-            'categories' => 'required|array',
+            'chapters' => 'required|array|string|max:255',
+            'categories' => 'required|array|exists:categories,id',
         ];
     }
 }
