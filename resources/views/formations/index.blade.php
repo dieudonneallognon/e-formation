@@ -140,7 +140,7 @@
                                     <span class="badge rounded-pill bg-primary position-absolute fs-5 shadow"
                                         style="top: 5px; right: 5px;">{{ $formation->price }} €</span>
                                     <div class="card-body text-center">
-                                        <h5 class="card-title fw-bolder fs-4 my-2">{{ $formation->designation }}</h5>
+                                        <h5 style="min-height: 45px;" class="card-title fw-bolder fs-4 my-2">{{ $formation->designation }}</h5>
                                         <a href="{{ route('formations.show', ['formation' => $formation->id]) }}" class="btn btn-primary">
                                             <i class="bi bi-eye-fill"></i>&nbsp;Suivre
                                         </a>

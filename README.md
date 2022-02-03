@@ -1,4 +1,9 @@
+# E-Formation
+
+![](./screenshot.png)
+
 ## Contexte
+
 
 E-Formation est une plateforme de E-learning gérée par un administeur des
 formateurs et ouverts au clients
@@ -16,29 +21,40 @@ utilisateurs
 -   Il est nécessaire d'avoir composer installé
 
 -   Dupliquer le fichier .env.example en le rennommant en .env.example puis
-    configurer la base de donnée grâce aux variables
-    DB_CONNECTION
-    DB_HOST
-    DB_PORT
-    DB_DATABASE
-    DB_USERNAME
-    DB_PASSWORD
+    configurer la base de donnée grâce aux variables et le serveur de mail:
 
--   Taper les commandes suivantes à la racine du projet
+        DB_CONNECTION=db_connection
+        DB_HOST=db_host
+        DB_PORT=db_port
+        DB_DATABASE=db_name
+        DB_USERNAME=db_username
+        DB_PASSWORD=db_password
 
-composer install
+        MAIL_MAILER=smtp
+        MAIL_HOST=mail_server_host
+        MAIL_PORT=mail_server_port
+        MAIL_USERNAME=mail_server_username
+        MAIL_PASSWORD=mail_server_password
+        MAIL_ENCRYPTION=mail_server_encryption
 
-php artisan migrate:fresh --seed
+-   Taper les commandes suivantes à la racine du projet:
+
+        .../e-formation > composer install
+
+        .../e-formation > php artisan migrate:fresh --seed
 
 ## Lancement du projet
 
--   Taper la commande php artisan serve
+-   Taper la commande suivante:
+    
+        .../e-formation > php artisan serve
 
 ## Se connecter en tant qu'administrateurs
 
-email: admin@admin.com
-mot de passe: admin
+*email:* admin@admin.com
+
+*mot de passe:* admin
 
 ## MCD
 
-Voir le fichier MCD.png
+![](./MCD.png)
