@@ -14,7 +14,9 @@ Les formateurs gèrent leur formation (ajout, suppression, création, demande de
 
 Les administrateurs eux gèrent toute la plateforme, ils ont les mêmes droits que
 les utilisateurs, et formateurs, mais peuvent confirmer l'ajout ou non des
-utilisateurs
+utilisateurs  
+
+Démo en ligne : [http://e-formations.herokuapp.com/formations](http://e-formations.herokuapp.com/formations)
 
 ## Installation du projet
 
