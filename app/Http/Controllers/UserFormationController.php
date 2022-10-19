@@ -8,7 +8,6 @@ use App\Http\Requests\UpdateFormationRequest;
 use App\Models\Category;
 use App\Models\Chapter;
 use App\Models\Formation;
-use App\Models\FormationCategoryLink;
 use Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;

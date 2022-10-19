@@ -108,15 +108,6 @@ class Formation extends Model
         return $this->hasMany(Chapter::class, 'formation_id', 'id');
     }
 
-    /**
-     * Get all of the links to categories for the Formation.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function categoryLinks(): HasMany
-    {
-        return $this->hasMany(FormationCategoryLink::class, 'formation_id', 'id');
-    }
 
     /**
      * The categories that belong to the Formation.
