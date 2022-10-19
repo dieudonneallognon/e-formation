@@ -38,24 +38,35 @@ use Laravel\Sanctum\HasApiTokens;
  * @method static \Illuminate\Database\Eloquent\Builder|User whereRoleId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereUpdatedAt($value)
  * @mixin \Eloquent
+ * @property string|null $two_factor_secret
+ * @property string|null $two_factor_recovery_codes
+ * @property string $avatar
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Formation[] $formation
+ * @property-read int|null $formation_count
+ * @property-read \App\Models\UserRole $role
+ * @method static \Illuminate\Database\Eloquent\Builder|User whereAvatar($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|User whereTwoFactorRecoveryCodes($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|User whereTwoFactorSecret($value)
  */
 class User extends Authenticatable
 {
-    use HasApiTokens, HasFactory, Notifiable;
+    use HasApiTokens;
+    use HasFactory;
+    use Notifiable;
 
     /**
      * The default user password.
      *
      * @var string
      */
-    const DEFAULT_PASSWORD = 'password';
+    public const DEFAULT_PASSWORD = 'password';
 
     /**
      *THe user Avatar file name Pattern.
      *
      * @var string
      */
-    const AVATAR_IMAGE_NAME_PATTERN = 'avatar-?.?';
+    public const AVATAR_IMAGE_NAME_PATTERN = 'avatar-?.?';
 
     /**
      * The table associated with the model.
@@ -98,7 +109,8 @@ class User extends Authenticatable
         return $this->role->name == UserRole::FORMATOR_ROLE;
     }
 
-    public function getAvatar() {
+    public function getAvatar()
+    {
         return (Str::of($this->avatar)->contains('http'))
             ? $this->avatar
             : "storage/".$this->avatar;

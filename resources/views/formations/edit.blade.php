@@ -21,7 +21,7 @@
                         <div class="row">
                             <div class="col-12">
                                 <form id="edit-formation" method="POST" enctype="multipart/form-data"
-                                      action="{{ route('user.formations.update', ['formation' => $formation->id, 'id' => $formation->id]) }}">
+                                    action="{{ route('user.formations.update', ['formation' => $formation->id, 'id' => $formation->id]) }}">
                                     @csrf
                                     @method('PUT')
                                     <!-- Input -->
@@ -121,22 +121,22 @@
 
 
 @section('scripts')
-    @parent
+@parent
 
-    <script src="https://cdn.tiny.cloud/1/4741oc33ybtlzv6rsed459tfil3q25ivwfmvcieq3g5wocus/tinymce/5/tinymce.min.js"
-        referrerpolicy="origin">
-    </script>
+<script src="https://cdn.tiny.cloud/1/4741oc33ybtlzv6rsed459tfil3q25ivwfmvcieq3g5wocus/tinymce/5/tinymce.min.js"
+    referrerpolicy="origin">
+</script>
 
-    <script>
-        window.addEventListener('load', (event) => {
+<script>
+    window.addEventListener('load', (event) => {
             tinymce.init({
                 selector: '#description'
             });
         });
-    </script>
+</script>
 
-    <script>
-        document.getElementById('chapter-nb').addEventListener('change', (event) => {
+<script>
+    document.getElementById('chapter-nb').addEventListener('change', (event) => {
             const chapterNb = event.currentTarget.value;
             const chapterZone = document.getElementById('chapter-zone');
 
@@ -152,9 +152,9 @@
                 `;
             }
         });
-    </script>
-    <script>
-        document.querySelector('input[name="image"]').addEventListener('change', (ev) => {
+</script>
+<script>
+    document.querySelector('input[name="image"]').addEventListener('change', (ev) => {
 
             const ext = ev.currentTarget.value.match(/\..*/).pop();
 
@@ -173,5 +173,5 @@
                 ev.currentTarget.value = null;
             }
         });
-    </script>
+</script>
 @endsection

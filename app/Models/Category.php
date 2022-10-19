@@ -18,6 +18,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany as BelongsToMany;
  * @method static \Illuminate\Database\Eloquent\Builder|Category whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Category whereName($value)
  * @mixin \Eloquent
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Formation[] $formations
+ * @property-read int|null $formations_count
  */
 class Category extends Model
 {

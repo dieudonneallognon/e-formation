@@ -17,6 +17,8 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|UserRole whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|UserRole whereName($value)
  * @mixin \Eloquent
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\User[] $users
+ * @property-read int|null $users_count
  */
 class UserRole extends Model
 {
@@ -27,14 +29,14 @@ class UserRole extends Model
      *
      * @var string
      */
-    const ADMIN_ROLE = 'admin';
+    public const ADMIN_ROLE = 'admin';
 
     /**
      * The formator role constant value.
      *
      * @var string
      */
-    const FORMATOR_ROLE = 'formator';
+    public const FORMATOR_ROLE = 'formator';
 
     /**
      * The table associated with the model.

@@ -28,6 +28,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo as BelongsTo;
  * @method static \Illuminate\Database\Eloquent\Builder|Chapter whereTitle($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Chapter whereUpdatedAt($value)
  * @mixin \Eloquent
+ * @property-read \App\Models\Formation $user
  */
 class Chapter extends Model
 {

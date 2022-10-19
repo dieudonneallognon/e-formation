@@ -34,6 +34,13 @@ use Illuminate\Support\Str;
  * @method static \Illuminate\Database\Eloquent\Builder|Formation whereType($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Formation whereUpdatedAt($value)
  * @mixin \Eloquent
+ * @property int $user_id
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Category[] $categories
+ * @property-read int|null $categories_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Chapter[] $chapters
+ * @property-read int|null $chapters_count
+ * @property-read \App\Models\User $user
+ * @method static \Illuminate\Database\Eloquent\Builder|Formation whereUserId($value)
  */
 class Formation extends Model
 {
@@ -44,7 +51,7 @@ class Formation extends Model
      *
      * @var string
      */
-    const IMAGE_PATTERN = 'image-formations-?.?';
+    public const IMAGE_PATTERN = 'image-formations-?.?';
 
     /**
      * The table associated with the model.
@@ -74,15 +81,11 @@ class Formation extends Model
             $formation->chapters()->each(function ($chapter) {
                 $chapter->delete(); // <-- direct deletion
             });
-
-            $formation->categoryLinks()->each(function ($link) {
-                $link->delete();
-            });
-            // do the rest of the cleanup...
         });
     }
 
-    public function getImage() {
+    public function getImage()
+    {
         return (Str::contains($this->image, 'https'))
             ? $this->image
             : asset("storage/$this->image");
