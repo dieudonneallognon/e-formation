@@ -9,11 +9,14 @@
         </div>
         @endif
 
+        @php
+        $image = Str::contains($formation->image, 'http') ? asset("$formation->image") :
+        asset("storage/$formation->image");
+        @endphp
         <div class="card">
             <div class="card-body">
                 <div class="card mb-3">
-                    <img src="{{ $formation->image }}" data-old="{{ $formation->image }}"
-                        height="800px" class="card-img-bottom" alt="...">
+                    <img src="{{ $image }}" data-old="{{ $image }}" height="800px" class="card-img-bottom" alt="...">
                     <div class="card-body">
                         <div class="row">
                             <div class="col-12">

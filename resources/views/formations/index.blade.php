@@ -87,9 +87,13 @@
                 <div class="row">
                     @isset($formations)
                         @forelse ($formations as $formation)
-                            <div class="col-4 my-5">
+                            <div class="col-xl-4 col-lg-6 col-md-12 col-12 mt-6 my-5">
                                 <div class="card position-relative">
-                                    <img src="@if (Str::contains($formation->image, 'http')){{ asset("$formation->image") }}@else{{ asset("storage/$formation->image") }}@endif" height="400px" class="card-img-top"
+                                    <img src="{{
+                                    Str::contains($formation->image, 'http')
+                                    ? asset("$formation->image")
+                                    : asset("storage/$formation->image") }}"
+                                    height="400px" class="card-img-top"
                                         alt="{{ $formation->designation }}">
 
                                     <span class="badge rounded-pill bg-primary position-absolute fs-5 shadow"
