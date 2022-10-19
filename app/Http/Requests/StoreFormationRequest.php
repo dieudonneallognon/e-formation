@@ -29,7 +29,7 @@ class StoreFormationRequest extends FormRequest
             'description' => 'required|string',
             'image' => 'required|image',
             'price' => 'required|numeric',
-            'chapters' => 'required|array|string|max:255',
+            'chapters' => 'required|array|max:255',
             'categories' => 'required|array|exists:categories,id',
         ];
     }
