@@ -95,7 +95,11 @@
                                     @foreach ($categories as $category)
                                     <div class="form-check form-check-inline">
                                         <input name="categories[]" class="form-check-input" type="checkbox"
-                                            id="inlineCheckbox1" value="{{ $category->id }}">
+                                            id="inlineCheckbox1" @foreach ($formation->categories as $formationCategory)
+                                        @if ($formationCategory->id == $category->id)
+                                        checked
+                                        @endif @endforeach
+                                        value="{{ $category->id }}">
                                         <label class="form-check-label" for="inlineCheckbox1">{{ $category->name
                                             }}</label>
                                     </div>
