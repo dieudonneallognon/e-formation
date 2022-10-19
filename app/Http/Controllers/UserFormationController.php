@@ -42,7 +42,6 @@ class UserFormationController extends Controller
                 '?', [strtotime('now'), $image->extension()],
                 Formation::IMAGE_PATTERN
             ),
-            'type' => 'test',
             'user_id' => auth()->user()->id
         ]);
 
@@ -80,7 +79,6 @@ class UserFormationController extends Controller
         $formation->designation = $data['designation'];
         $formation->description = $data['description'];
         $formation->price = $data['price'];
-        $formation->type = 'test';
         $formation->save();
 
         if ($image) {
